@@ -61,27 +61,55 @@
             padding: 15px; border-radius: 4px; font-weight: 600; color: var(--green-glow);
         }
 
-        .btn-admin-redirect {
+       .btn-admin-redirect {
             position: fixed;
             bottom: 15px;
-            right: 15px; /* Alterado de left para right para mover para o canto direito */
+            right: 15px; /* Fixa no canto inferior direito no computador */
             background: none;
-            color: #1a1a1a; /* Ficou ligeiramente mais escuro para sumir ainda mais no fundo preto */
+            color: #1a1a1a; /* Cor bem escura para camuflar no fundo preto */
             border: none;
             padding: 5px;
             cursor: pointer;
-            font-size: 0.75em; /* Mantém o texto bem pequeno e discreto */
+            font-size: 0.75em; 
             font-weight: normal;
             text-decoration: none;
             display: inline-block;
             margin-bottom: 0;
             transition: color 0.3s;
-            z-index: 999; /* Garante que fique por cima de tudo para você clicar */
+            z-index: 999; 
         }
         .btn-admin-redirect:hover { 
-            color: #555; /* Acende levemente ao passar o mouse exatamente em cima */
+            color: #555; 
             background: none;
             border: none;
+        }
+        
+        /* REGRAS DE MEDIA QUERY PARA CELULARES */
+        @media(max-width: 768px) {
+            body { padding: 20px 10px; }
+            header { width: 100%; padding: 20px 15px; }
+            header h1 { font-size: 1.7em; }
+            header p { font-size: 0.95em; }
+            .category-section { padding: 15px; }
+            
+            /* Oculta a tabela que espreme a tela */
+            .quiz-table { display: none !important; }
+            
+            /* Mostra os cards verticais otimizados para o polegar */
+            .mobile-question-card { display: block; }
+            
+            .diagnostic-body-justified { text-align: left; font-size: 1em; }
+            .modal-card { padding: 25px 20px; }
+        
+            /* AJUSTE DO BOTÃO DE ADMIN NO CELULAR */
+            .btn-admin-redirect {
+                position: relative; /* Remove o comportamento flutuante */
+                display: block;
+                text-align: center;
+                margin: 40px auto 10px auto; /* Dá um espaço grande de 40px abaixo do botão de enviar */
+                bottom: auto;
+                right: auto;
+            }
         }
 
         .category-section {
