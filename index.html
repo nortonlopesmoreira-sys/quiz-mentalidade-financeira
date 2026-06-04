@@ -64,22 +64,22 @@
         .btn-admin-redirect {
             position: fixed;
             bottom: 15px;
-            left: 15px; 
+            right: 15px; /* Alterado de left para right para mover para o canto direito */
             background: none;
-            color: #222; 
+            color: #1a1a1a; /* Ficou ligeiramente mais escuro para sumir ainda mais no fundo preto */
             border: none;
-            padding: 0;
+            padding: 5px;
             cursor: pointer;
-            font-size: 0.75em; 
+            font-size: 0.75em; /* Mantém o texto bem pequeno e discreto */
             font-weight: normal;
             text-decoration: none;
             display: inline-block;
             margin-bottom: 0;
             transition: color 0.3s;
-            z-index: 999; 
+            z-index: 999; /* Garante que fique por cima de tudo para você clicar */
         }
         .btn-admin-redirect:hover { 
-            color: #555; 
+            color: #555; /* Acende levemente ao passar o mouse exatamente em cima */
             background: none;
             border: none;
         }
