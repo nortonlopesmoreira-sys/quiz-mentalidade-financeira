@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Mentalidade Financeira</title>
+    <style>
+        :root {
+            --bg-absolute-black: #000000;
+            --card-dark-gray: #121814;
+            --green-glow: #00ff66;
+            --green-dim: #009933;
+            --text-light: #e0e0e0;
+            --text-muted: #888;
+            --border-color: #1f2e26;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-absolute-black);
+            background-image: url('pantera.png');
+            background-size: auto;
+            background-position: top right;
+            background-repeat: no-repeat;
+            color: var(--text-light);
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1000px; width: 100%; position: relative; }
+
+        header {
+            background: var(--card-dark-gray); 
+            border-radius: 12px;
+            border: 1px solid var(--border-color); 
+            padding: 35px; 
+            margin: 0 auto 25px auto; /* O 'auto' nas laterais centraliza o bloco */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7); 
+            width: max-content; /* Faz a caixa ajustar exatamente ao tamanho do texto */
+            max-width: 100%; /* Garante que não quebre em telas de celular */
+            text-align: center; /* Centraliza os textos internamente */
+        }
+
+        header h1 { 
+            color: var(--green-glow); 
+            font-size: 2.2em; 
+            margin-bottom: 10px; 
+        }
+        
+        header p { 
+            color: var(--text-light); 
+            font-size: 1.1em; 
+            margin-bottom: 15px; 
+        }
+
+        .instruction-box {
+            background: rgba(0, 255, 102, 0.05); border-left: 4px solid var(--green-glow);
+            padding: 15px; border-radius: 4px; font-weight: 600; color: var(--green-glow);
+        }
+
+        .btn-admin-redirect {
+            position: fixed;
+            bottom: 15px;
+            left: 15px; /* Fixa o link no extremo canto inferior esquerdo da tela */
+            background: none;
+            color: #222; /* Cor cinza muito escura, quase sumindo no fundo preto */
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-size: 0.75em; /* Texto bem pequeno */
+            font-weight: normal;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 0;
+            transition: color 0.3s;
+            z-index: 999; /* Garante que fique visível para você clicar, mesmo escondido */
+        }
+        .btn-admin-redirect:hover { 
+            color: #555; /* Só acende levemente se passar o mouse exatamente em cima */
+            background: none;
+            border: none;
+        }
+
+        .category-section {
+            background: var(--card-dark-gray); border-radius: 12px;
+            border: 1px solid var(--border-color); padding: 25px; margin-bottom: 25px;
+        }
+
+        .category-title {
+            display: none !important;
+        }
+
+        .quiz-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .quiz-table th { text-align: center; padding: 12px; font-size: 0.85em; color: var(--text-muted); border-bottom: 2px solid var(--border-color); }
+        .quiz-table th.phrase-header { text-align: left; width: 45%; }
+        .quiz-table td { padding: 16px 12px; border-bottom: 1px solid rgba(31, 46, 38, 0.5); }
+        .quiz-table tr:hover td { background: rgba(0, 255, 102, 0.03); }
+        .phrase-text { font-size: 1.05em; color: var(--text-light); }
+        .radio-cell { text-align: center; width: 11%; }
+
+        .radio-cell input[type="radio"] {
+            appearance: none; width: 20px; height: 20px; border: 2px solid var(--text-muted);
+            border-radius: 50%; outline: none; cursor: pointer; position: relative;
+        }
+        .radio-cell input[type="radio"]:checked { border-color: var(--green-glow); box-shadow: 0 0 8px var(--green-glow); }
+        .radio-cell input[type="radio"]:checked::before {
+            content: ''; width: 10px; height: 10px; background: var(--green-glow); border-radius: 50%;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+
+        .btn-submit {
+            background: var(--green-dim); color: #000; border: none; padding: 18px 30px;
+            font-size: 1.2em; font-weight: bold; border-radius: 6px; cursor: pointer;
+            width: 100%; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;
+        }
+        .btn-submit:hover { background: var(--green-glow); box-shadow: 0 0 15px var(--green-glow); transform: translateY(-2px); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center;
+            z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-card {
+            background: var(--card-dark-gray); border: 2px solid var(--green-glow);
+            padding: 35px; border-radius: 12px; max-width: 500px; width: 90%;
+            box-shadow: 0 0 30px rgba(0,255,102,0.3); position: relative;
+        }
+        .modal-card h3 { color: var(--green-glow); margin-bottom: 15px; font-size: 1.5em; }
+        .close-modal { position: absolute; top: 15px; right: 15px; color: var(--text-muted); cursor: pointer; font-size: 1.4em; }
+
+        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 20px; }
+        .form-group label { font-size: 0.9em; color: var(--text-muted); }
+        .form-group input {
+            background: var(--bg-absolute-black); border: 1px solid var(--border-color);
+            padding: 12px; color: #fff; border-radius: 6px; font-size: 1em; outline: none;
+        }
+        .form-group input:focus { border-color: var(--green-glow); }
+
+        .result-box {
+            background: var(--card-dark-gray); border: 1px solid var(--green-glow);
+            padding: 30px; border-radius: 12px; margin-top: 25px;
+        }
+        .result-box h2 { color: var(--green-glow); margin-bottom: 15px; }
+        
+        /* ESTILIZAÇÃO DO DIAGNÓSTICO AJUSTADA */
+        .diagnostic-text {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px; border-radius: 6px; border-left: 4px solid var(--green-glow); margin: 20px 0;
+        }
+        .diagnostic-intro-phrase {
+            color: var(--green-glow); font-weight: 600; text-align: center; font-size: 1.1em; margin-bottom: 20px; display: block;
+        }
+        .diagnostic-title-centered {
+            text-align: center; color: var(--green-glow); font-size: 1.4em; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .diagnostic-body-justified {
+            font-size: 1.1em; line-height: 1.6; text-align: justify; color: var(--text-light); white-space: pre-line;
+        }
+
+        .hidden { display: none !important; }
+
+        @media(max-width: 768px) {
+            header { width: 100%; }
+            .quiz-table th:not(.phrase-header), .radio-cell { padding: 8px 4px; font-size: 0.75em; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="admin.html" target="_blank" class="btn-admin-redirect">Painel de Controle</a>
+
+    <header>
+        <h1>Quiz: Mentalidade Financeira</h1>
+        <p>Descubra o padrão invisível que controla seu dinheiro.</p>
+        <div class="instruction-box">Com que frequência você repete as seguintes frases?</div>
+    </header>
+
+    <form id="main-quiz-form" onsubmit="handleQuizSubmit(event)">
+        <div id="quiz-questions"></div>
+        <button type="submit" class="btn-submit">Ver Meu Diagnóstico</button>
+    </form>
+
+    <div id="result-container" class="result-box hidden">
+        <h2>Seu Diagnóstico Financeiro</h2>
+        <p>Olá, <strong id="res-nome" style="color: var(--green-glow);"></strong>. Com base na análise estrutural de suas respostas:</p>
+        <div class="diagnostic-text" id="res-diagnostic"></div>
+                <div style="text-align: center; margin-top: 35px; margin-bottom: 15px;">
+            <a href="https://vanessabarros.vercel.app/" target="_blank" 
+            style="background-color: #00ff66; color: #000000; font-family: 'Segoe UI', sans-serif; font-size: 1.1em; font-weight: bold; text-decoration: none; padding: 15px 32px; border-radius: 6px; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); transition: transform 0.2s, box-shadow 0.2s;">
+                texto redirecionador
+            </a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9em;">Seus dados e diagnósticos foram catalogados com sucesso na planilha de controle.</p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="capture-modal">
+    <div class="modal-card">
+        <span class="close-modal" onclick="toggleModal(false)">✕</span>
+        <h3>Liberar Diagnóstico</h3>
+        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px;">Insira suas informações cadastrais para processar e registrar seu mapa de crenças financeiras.</p>
+        
+        <form id="lead-form" onsubmit="handleLeadSubmit(event)">
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" required placeholder="Ex: Vanessa Barros">
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" required placeholder="nome@email.com">
+            </div>
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp</label>
+                <input type="tel" id="whatsapp" required placeholder="(99) 99999-9999" maxlength="15" oninput="mascaraTelefone(this)">
+            </div>
+
+            <div class="form-group" style="flex-direction: row; align-items: flex-start; gap: 10px; margin: 20px 0; background: rgba(0, 255, 102, 0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                <input type="checkbox" id="aceita-email" required style="width: 18px; height: 18px; accent-color: var(--green-glow); cursor: pointer; margin-top: 2px;">
+                <label for="aceita-email" style="color: var(--text-light); cursor: pointer; font-size: 0.95em; line-height: 1.4; user-select: none;">
+                    Aceito receber o resultado detalhado em meu e-mail cadastrado.
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit" style="padding: 12px; font-size: 1em;" id="btn-save-lead">Salvar e Gerar Relatório</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbz_tf6DapoR542P1_xTD21v4BtjdPMNngxfllb4stsYPk4RjUk-AwIJXuaCtTnpJ5PN/exec";
+
+    const dadosCrencas = {
+        "escassez": { 
+            titulo: "SOBREVIVENTE FINANCEIRA", 
+            frases: ["Dinheiro é difícil de ganhar.", "Por mais que eu ganhe, nunca sobra dinheiro.", "Preciso me esforçar MUITO pra ter pouco."], 
+            diagnostico: "Você aprendeu a viver em estado de alerta. Mesmo quando as contas estão em dia, existe uma sensação constante de que algo pode dar errado, de que o dinheiro pode acabar ou de que ainda não é suficiente. Por isso, trabalha mais do que gostaria, carrega preocupações que nem sempre correspondem à realidade e raramente consegue relaxar completamente quando o assunto é dinheiro. \n\n O problema é que viver nesse modo de sobrevivência consome energia, aumenta a ansiedade e dificulta enxergar oportunidades. Quanto mais você tenta se proteger, mais reforça a sensação de escassez. Com o tempo, isso pode gerar exaustão, medo de arriscar e a impressão de que prosperar é sempre mais difícil para você do que para os outros. \n\n A boa notícia é que essa não é uma característica da sua personalidade. É uma programação construída ao longo da vida e que pode ser transformada. Quando você aprende a substituir o medo pela confiança and a escassez pela consciência, o dinheiro deixa de ser uma ameaça e passa a ser uma ferramenta para construir a vida que deseja. \n\n É exatamente esse processo que realizamos na Mentoria Identidade Financeira. Juntas, vamos identificar a origem desse padrão, reprogramar sua relação com o dinheiro e criar uma base emocional capaz de sustentar prosperidade com tranquilidade e segurança." 
+        },
+        "culpa": { 
+            titulo: "SABOTADORA INCONSCIENTE", 
+            frases: ["Quando começo a me organizar, algo acontece.", "Dinheiro na minha mão não dura.", "Eu até ganho bem, mas nunca consigo manter."], 
+            diagnostico: "Você provavelmente já percebeu que existe um padrão estranho na sua vida financeira: quando as coisas começam a melhorar, algo acontece e você acaba voltando para o mesmo lugar. Pode ser um gasto inesperado, uma decisão impulsiva ou simplesmente a dificuldade de manter aquilo que conquistou. E isso gera uma sensação frustrante de estar sempre recomeçando. \n\n No fundo, não é falta de inteligência, disciplina ou capacidade. Existe uma parte inconsciente tentando manter você dentro de um nível considerado seguro e familiar. Por isso, mesmo desejando crescer, você encontra formas de impedir que esse crescimento se torne permanente. \n\n Se esse padrão continuar ativo, você pode passar anos acumulando esforço sem conseguir construir a estabilidade financeira que deseja. A sensação de estar andando em círculos tende a se repetir, mesmo quando sua renda aumenta. \n\n A transformação começa quando você entende que o problema não está no dinheiro, mas nos mecanismos emocionais que influenciam suas decisões. Quando essa raiz é trabalhada, torna-se possível criar resultados consistentes e sustentáveis. \n\n Na Mentoria Identidade Financeira, ajudamos você a identificar esses ciclos invisíveis e construir uma nova forma de se relacionar com prosperidade, realização e crescimento." 
+        },
+        "baixo_merecimento": { 
+            titulo: "INVISÍVEL FINANCEIRA", 
+            frases: ["Não sei se posso cobrar tudo isso.", "Não me sinto confortável falando de dinheiro.", "Talvez eu não valha esse valor."], 
+            diagnostico: "Você possui mais valor, competência e potencial do que costuma reconhecer. Frequentemente minimiza suas conquistas, sente desconforto ao falar sobre dinheiro e encontra dificuldade para cobrar aquilo que realmente merece receber. Muitas vezes acredita que ainda precisa estudar mais, melhorar mais ou provar mais antes de se sentir pronta. \n\n Esse padrão faz com que oportunidades sejam perdidas, negociações sejam evitadas e sua remuneração fique abaixo daquilo que poderia alcançar. Quanto mais você duvida do próprio valor, mais o mundo tende a refletir essa mesma dúvida. \n\n Com o passar do tempo, isso pode gerar frustração, sensação de injustiça e a impressão de que seu esforço não é recompensado da forma que deveria. Não porque você não tenha capacidade, mas porque ainda não reconheceu plenamente o seu valor. \n\n A verdadeira mudança acontece quando sua identidade passa a sustentar o nível de prosperidade que você deseja viver. Quando você se percebe de forma diferente, suas decisões, seus limites e seus resultados também mudam. \n\n Na Mentoria Identidade Financeira, trabalhamos para fortalecer sua autoestima financeira, desenvolver segurança para se posicionar e criar uma relação mais saudável entre valor, dinheiro e merecimento." 
+        },
+        "morais": { 
+            titulo: "JUÍZA DO DINHEIRO", 
+            frases: ["Dinheiro muda as pessoas.", "Quem tem muito dinheiro geralmente fez algo errado.", "Prefiro ser feliz do que rica."], 
+            diagnostico: "Existe uma parte sua que deseja prosperar e outra que ainda associa riqueza a comportamentos negativos, egoísmo, arrogância ou afastamento das pessoas. Mesmo que racionalmente você queira ganhar mais, emocionalmente pode existir um conflito que faz o crescimento financeiro parecer perigoso ou inadequado. \n\n Esse tipo de crença costuma atuar silenciosamente. Você se esforça para crescer, mas ao mesmo tempo cria barreiras invisíveis que dificultam o recebimento, a expansão e a construção de patrimônio. Afinal, é difícil desejar algo que, no fundo, você acredita ser ruim. \n\n Se esse padrão permanecer ativo, a prosperidade continuará sendo percebida como um risco emocional, e não como uma possibilidade natural. Isso pode gerar culpa, bloqueios financeiros e resistência a oportunidades importantes. \n\n A virada acontece quando você percebe que dinheiro não define caráter. Pessoas boas continuam boas com mais dinheiro. Pessoas generosas continuam generosas com mais dinheiro. O dinheiro apenas amplia aquilo que já existe. \n\n Na Mentoria Identidade Financeira, ajudamos você a reconstruir sua percepção sobre riqueza para que prosperar deixe de ser um conflito e se torne uma consequência natural do seu crescimento." 
+        },
+        "medo_perda": { 
+            titulo: "CONSERVADORA PARALISADA", 
+            frases: ["E se eu perder tudo?", "Prefiro não mexer para não correr riscos.", "Tenho medo de tomar a decisão errada."], 
+            diagnostico: "Você valoriza segurança e estabilidade. Isso é uma qualidade importante, mas em alguns momentos o medo de errar acaba sendo maior do que a vontade de avançar. Por isso, decisões importantes são adiadas, oportunidades são analisadas excessivamente e a busca por segurança absoluta acaba gerando estagnação. \n\n Muitas vezes você acredita que está se protegendo, quando na verdade está apenas permanecendo parada. E o problema é que ficar imóvel também tem um custo. Enquanto o medo tenta evitar perdas, ele também impede conquistas. \n\n Ao longo dos anos, isso pode gerar arrependimento, sensação de potencial desperdiçado e a percepção de que a vida financeira não evolui na velocidade que poderia. \n\n O crescimento não acontece quando o medo desaparece. Ele acontece quando você desenvolve confiança suficiente para agir apesar dele. É nesse momento que novas possibilidades começam a surgir. \n\n Na Mentoria Identidade Financeira, você aprenderá a fortalecer sua segurança interna para tomar decisões financeiras com mais clareza, confiança e tranquilidade." 
+        },
+        "teto_limitado": { 
+            titulo: "LIMITADA POR PADRÃO", 
+            frases: ["Sempre volto para o mesmo nível.", "Parece que existe um limite do quanto consigo ganhar.", "Quando ganho mais, gasto mais."], 
+            diagnostico: "Você provavelmente já viveu momentos em que ganhou mais dinheiro, teve melhores oportunidades ou alcançou resultados superiores. O problema é que, por algum motivo, esse crescimento nunca se sustentou por muito tempo. Parece existir um limite invisível que sempre traz você de volta ao mesmo patamar. \n\n Esse padrão faz com que o esforço aumente sem que a construção de patrimônio acompanhe na mesma proporção. Quanto mais tempo isso acontece, mais surge a sensação de que existe algo impedindo sua evolução. \n\n A verdade é que toda pessoa possui um 'termostato financeiro', um nível de prosperidade que considera normal. Quando você tenta ultrapassar esse limite sem atualizar sua identidade, o inconsciente cria formas de retornar ao ponto conhecido. \n\n A boa notícia é que esse teto não é real. Ele é apenas um padrão aprendido. E tudo aquilo que foi aprendido também pode ser transformado. \n\n Na Mentoria Identidade Financeira, ajudamos você a expandir sua identidade financeira para que seus resultados cresçam e permaneçam em um novo nível." 
+        },
+        "dependencia": { 
+            titulo: "DEPENDENTE FINANCEIRA", 
+            frases: ["Nunca fui boa com dinheiro.", "Prefiro que outra pessoa cuide disso.", "Finanças são muito complicadas para mim."], 
+            diagnostico: "Você pode ter aprendido, ao longo da vida, que dinheiro é complicado demais ou que outras pessoas são naturalmente melhores para lidar com finanças. Por isso, muitas vezes evita aprofundar-se no assunto ou transfere decisões importantes para terceiros. \n\n Embora essa postura pareça confortável no curto prazo, ela costuma gerar insegurança, dependência e sensação de vulnerabilidade. Afinal, quando você não assume o controle da própria vida financeira, acaba entregando esse poder para outras pessoas ou para as circunstâncias. \n\n Com o tempo, isso pode limitar sua autonomia e fazer com que decisões importantes sejam tomadas sem a confiança que você merece ter. \n\n A transformação acontece quando você percebe que não precisa nascer sabendo. Você apenas precisa assumir o papel de protagonista da sua própria história financeira.\n\n Na Mentoria Identidade Financeira, você desenvolverá conhecimento, confiança e autonomia para tomar decisões alinhadas aos seus objetivos e valores." 
+        },
+        "conflito": { 
+            titulo: "COMPENSADORA", 
+            frases: ["Eu mereço.", "Só se vive uma vez.", "Não sei se terei outra oportunidade."], 
+            diagnostico: "Você valoriza experiências, qualidade de vida e os momentos que fazem a vida valer a pena. O problema não está nisso. O problema surge quando o prazer passa a funcionar como compensação para o estresse, o cansaço ou as frustrações do dia a dia. \n\n Nessas situações, gastos impulsivos costumam ser justificados por frases como 'eu mereço', 'só se vive uma vez' ou 'talvez eu não tenha outra oportunidade'. O alívio emocional é imediato, mas muitas vezes vem acompanhado de arrependimento ou preocupação depois. \n\n Esse padrão dificulta a construção de patrimônio porque faz com que decisões de curto prazo tenham mais força do que objetivos maiores. E quanto mais o dinheiro é usado para preencher necessidades emocionais, mais difícil se torna alcançar liberdade financeira. \n\n A verdadeira mudança acontece quando você aprende a desfrutar da vida sem transformar o dinheiro em ferramenta de compensação emocional. Prazer e prosperidade não precisam ser opostos. \n\n Na Mentoria Identidade Financeira, você aprenderá a criar uma relação equilibrada com o dinheiro, aproveitando o presente sem comprometer o futuro que deseja construir." 
+        }
+    };
+
+    const escalas = [
+        { label: "Nunca", valor: 1 }, { label: "Raramente", valor: 2 }, { label: "Às vezes", valor: 3 }, { label: "Frequentemente", valor: 4 }, { label: "Sempre", valor: 5 }
+    ];
+
+    let temporarioScores = {};
+    let temporarioRanking = [];
+
+    const qDiv = document.getElementById('quiz-questions');
+    Object.keys(dadosCrencas).forEach(key => {
+        const sec = document.createElement('div');
+        sec.className = 'category-section';
+        sec.innerHTML = `<div class="category-title">${dadosCrencas[key].titulo}</div>`;
+        const tbl = document.createElement('table');
+        tbl.className = 'quiz-table';
+        tbl.innerHTML = `<thead><tr><th class="phrase-header"></th>${escalas.map(e=>`<th>${e.label}</th>`).join('')}</tr></thead>`;
+        const tbody = document.createElement('tbody');
+        
+        dadosCrencas[key].frases.forEach((f, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td class="phrase-text">"${f}"</td>` + 
+                escalas.map(e => `<td class="radio-cell"><input type="radio" name="${key}_${index + 1}" value="${e.valor}" required></td>`).join('');
+            tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody); sec.appendChild(tbl); qDiv.appendChild(sec);
+        // 1. EVENTO: Sempre que o usuário marcar uma opção, salva no localStorage
+        qDiv.addEventListener('change', (e) => {
+            if (e.target.type === 'radio') {
+                localStorage.setItem(e.target.name, e.target.value);
+            }
+        });
+
+        // 2. RESTAURAÇÃO: Assim que a página carrega, recoloca as opções que já estavam marcadas
+        window.addEventListener('DOMContentLoaded', () => {
+            Object.keys(dadosCrencas).forEach(key => {
+                for (let i = 1; i <= 3; i++) {
+                    const nomeCampo = `${key}_${i}`;
+                    const valorSalvo = localStorage.getItem(nomeCampo);
+                    
+                    if (valorSalvo) {
+                        const radioParaMarcar = document.querySelector(`input[name="${nomeCampo}"][value="${valorSalvo}"]`);
+                        if (radioParaMarcar) {
+                            radioParaMarcar.checked = true;
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+    function toggleModal(open) {
+        document.getElementById('capture-modal').classList.toggle('active', open);
+    }
+
+    function handleQuizSubmit(e) {
+        e.preventDefault();
+        
+        temporarioScores = {};
+        Object.keys(dadosCrencas).forEach(k => {
+            temporarioScores[k] = 0;
+        });
+        
+        Object.keys(dadosCrencas).forEach(key => {
+            for (let i = 1; i <= 3; i++) {
+                const radioMarcado = document.querySelector(`input[name="${key}_${i}"]:checked`);
+                if (radioMarcado) {
+                    temporarioScores[key] += parseInt(radioMarcado.value);
+                }
+            }
+        });
+
+        temporarioRanking = Object.keys(temporarioScores).map(k => ({ 
+            key: k, 
+            titulo: dadosCrencas[k].titulo, 
+            pontos: temporarioScores[k] 
+        }));
+        
+        temporarioRanking.sort((a, b) => b.pontos - a.pontos);
+        
+        toggleModal(true);
+    }
+
+    // FUNÇÃO QUE EXECUTA A MÁSCARA AUTOMÁTICA DE TELEFONE (COMPATÍVEL COM 8 E 9 DÍGITOS)
+    function mascaraTelefone(input) {
+        let valor = input.value.replace(/\D/g, ""); // Remove tudo o que não for número
+
+        if (valor.length > 11) {
+            valor = valor.substring(0, 11); // Limita o máximo de caracteres
+        }
+
+        // Aplica a formatação do DDD
+        if (valor.length > 2) {
+            valor = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
+        } else if (valor.length > 0) {
+            valor = `(${valor}`;
+        }
+
+        // Aplica o traço dinamicamente dependendo de ser celular (9 dígitos) ou fixo (8 dígitos)
+        if (valor.length > 10) {
+            let numerosLimpos = input.value.replace(/\D/g, "");
+            if (numerosLimpos.length === 10) {
+                // Caso o número de telefone tenha 8 dígitos: (XX) XXXX-XXXX
+                valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
+            } else {
+                // Caso o número de telefone tenha 9 dígitos: (XX) XXXXX-XXXX
+                valor = valor.replace(/(\d{5})(\d)/, "$1-$2");
+            }
+        }
+
+        input.value = valor;
+    }
+
+
+    function handleLeadSubmit(event) {
+        event.preventDefault();
+
+        const aceitaEmail = document.getElementById('aceita-email');
+        if (aceitaEmail && !aceitaEmail.checked) {
+            alert("Para liberar o relatório, marque a opção aceitando receber o resultado por e-mail.");
+            return;
+        }
+
+        const btn = document.getElementById('btn-save-lead');
+        btn.innerText = "Processando diagnósticos...";
+        btn.disabled = true;
+
+        const maior = temporarioRanking[0];
+        const payload = {
+            data: new Date().toLocaleString('pt-BR'),
+            nome: document.getElementById('nome').value,
+            email: document.getElementById('email').value,
+            whatsapp: document.getElementById('whatsapp').value,
+            principal: maior.titulo,
+            pontos: maior.pontos,
+            scores: JSON.stringify(temporarioScores)
+        };
+
+        const formBody = Object.keys(payload)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key]))
+            .join('&');
+
+        fetch(URL_API_GOOGLE, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: formBody
+        }).then(() => {
+            toggleModal(false);
+            
+            document.getElementById('res-nome').innerText = payload.nome;
+
+            // MONTAGEM DINÂMICA DO DIAGNÓSTICO COM TÍTULO CENTRALIZADO E CORPO JUSTIFICADO
+            const htmlResultado = `
+                <span class="diagnostic-intro-phrase">Seu resultado não define quem você é.<br>Define o padrão que você aprendeu.</span>
+                <div class="diagnostic-title-centered">${maior.titulo}</div>
+                <div class="diagnostic-body-justified">${dadosCrencas[maior.key].diagnostico}</div>
+            `;
+            
+            document.getElementById('res-diagnostic').innerHTML = htmlResultado;
+            
+            const rb = document.getElementById('result-container');
+            rb.classList.remove('hidden');
+            rb.scrollIntoView({ behavior: 'smooth' });
+        }).catch(err => {
+            alert("Erro ao conectar com a planilha. Certifique-se de preencher a URL_API_GOOGLE.");
+            console.error(err);
+        }).finally(() => {
+            btn.innerText = "Salvar e Gerar Relatório";
+            btn.disabled = false;
+        });
+    }
+</script>
+</body>
+</html>
