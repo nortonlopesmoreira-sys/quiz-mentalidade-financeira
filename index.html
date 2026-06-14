@@ -61,7 +61,7 @@
             padding: 15px; border-radius: 4px; font-weight: 600; color: var(--green-glow);
         }
 
-       .btn-admin-redirect {
+        .btn-admin-redirect {
             position: fixed;
             bottom: 15px;
             right: 15px; /* Fixa no canto inferior direito no computador */
@@ -83,7 +83,7 @@
             background: none;
             border: none;
         }
-        
+
         /* REGRAS DE MEDIA QUERY PARA CELULARES */
         @media(max-width: 768px) {
             body { padding: 20px 10px; }
@@ -100,7 +100,7 @@
             
             .diagnostic-body-justified { text-align: left; font-size: 1em; }
             .modal-card { padding: 25px 20px; }
-        
+
             /* AJUSTE DO BOTÃO DE ADMIN NO CELULAR */
             .btn-admin-redirect {
                 position: relative; /* Remove o comportamento flutuante */
@@ -287,20 +287,23 @@
 
     <form id="main-quiz-form" onsubmit="handleQuizSubmit(event)">
         <div id="quiz-questions"></div>
-        <button type="submit" class="btn-submit">Ver Meu Diagnóstico</button>
+        <button type="submit" class="btn-submit">Ver Meu Resultado</button>
     </form>
 
     <div id="result-container" class="result-box hidden">
         <h2>Seu Diagnóstico Financeiro</h2>
         <p>Olá, <strong id="res-nome" style="color: var(--green-glow);"></strong>. Com base na análise estrutural de suas respostas:</p>
         <div class="diagnostic-text" id="res-diagnostic"></div>
+        
+        <div style="text-align: justify">
+            <p>Você acabou de identificar um padrão que influencia silenciosamente suas decisões financeiras todos os dias. Mas esse é apenas o primeiro passo. Nos próximos conteúdos, você vai descobrir como essa identidade foi construída, por que ela continua comandando seus resultados e, principalmente, como começar a transformá-la. Clique abaixo e continue essa jornada ao lado de pessoas que decidiram parar de repetir os mesmos ciclos e construir uma nova história.</p>
+        </div>
         <div style="text-align: center; margin-top: 35px; margin-bottom: 15px;">
-            <a href="https://vanessabarros.vercel.app/" target="_blank" 
+            <a href="https://chat.whatsapp.com/GdCRE3GeGx89MNCZC7dIiu?s=sh&p=i&ilr=1&amv=0" target="_blank" 
             style="background-color: #00ff66; color: #000000; font-family: 'Segoe UI', sans-serif; font-size: 1.1em; font-weight: bold; text-decoration: none; padding: 15px 32px; border-radius: 6px; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); transition: transform 0.2s, box-shadow 0.2s;">
-                texto redirecionador
+                Quero Continuar Minha Transformação
             </a>
         </div>
-        <p style="color: var(--text-muted); font-size: 0.9em;">Seus dados e diagnósticos foram catalogados com sucesso na planilha de controle.</p>
     </div>
 </div>
 
@@ -308,7 +311,7 @@
     <div class="modal-card">
         <span class="close-modal" onclick="toggleModal(false)">✕</span>
         <h3>Liberar Diagnóstico</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px;">Insira suas informações cadastrais para processar e registrar seu mapa de crenças financeiras.</p>
+        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px;">Insira suas informações para enviarmos o seu resultado.</p>
         
         <form id="lead-form" onsubmit="handleLeadSubmit(event)">
             <div class="form-group">
@@ -331,7 +334,7 @@
                 </label>
             </div>
 
-            <button type="submit" class="btn-submit" style="padding: 12px; font-size: 1em;" id="btn-save-lead">Salvar e Gerar Relatório</button>
+            <button type="submit" class="btn-submit" style="padding: 12px; font-size: 1em;" id="btn-save-lead">Salvar e enviar resultado</button>
         </form>
     </div>
 </div>
@@ -340,45 +343,45 @@
     const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbz_tf6DapoR542P1_xTD21v4BtjdPMNngxfllb4stsYPk4RjUk-AwIJXuaCtTnpJ5PN/exec";
 
     const dadosCrencas = {
-        "escassez": { 
-            titulo: "SOBREVIVENTE FINANCEIRA", 
+        "A Guerreira Incansável": { 
+            titulo: "A Guerreira Incansável", 
             frases: ["Dinheiro é difícil de ganhar.", "Por mais que eu ganhe, nunca sobra dinheiro.", "Preciso me esforçar MUITO pra ter pouco."], 
-            diagnostico: "Você aprendeu a viver em estado de alerta. Mesmo quando as contas estão em dia, existe uma sensação constante de que algo pode dar errado, de que o dinheiro pode acabar ou de que ainda não é suficiente. Por isso, trabalha mais do que gostaria, carrega preocupações que nem sempre correspondem à realidade e raramente consegue relaxar completamente quando o assunto é dinheiro. \n\n O problema é que viver nesse modo de sobrevivência consome energia, aumenta a ansiedade e dificulta enxergar oportunidades. Quanto mais você tenta se proteger, mais reforça a sensação de escassez. Com o tempo, isso pode gerar exaustão, medo de arriscar e a impressão de que prosperar é sempre mais difícil para você do que para os outros. \n\n A boa notícia é que essa não é uma característica da sua personalidade. É uma programação construída ao longo da vida e que pode ser transformada. Quando você aprende a substituir o medo pela confiança and a escassez pela consciência, o dinheiro deixa de ser uma ameaça e passa a ser uma ferramenta para construir a vida que deseja. \n\n É exatamente esse processo que realizamos na Mentoria Identidade Financeira. Juntas, vamos identificar a origem desse padrão, reprogramar sua relação com o dinheiro e create uma base emocional capaz de sustentar prosperidade com tranquilidade e segurança." 
+            diagnostico: "Se você chegou até este resultado, existe uma grande chance de que tenha passado boa parte da vida acreditando que precisa lutar mais do que os outros para conquistar segurança. Você trabalha, se dedica, faz planos, tenta economizar, mas mesmo quando as coisas melhoram existe uma voz silenciosa dizendo que ainda não é suficiente. Como se, a qualquer momento, tudo pudesse desmoronar.\n\nO mais curioso é que essa forma de pensar não nasceu para prejudicar você. Em algum momento da sua história ela foi uma estratégia de proteção. Talvez tenha aprendido que dinheiro era motivo de preocupação, que era preciso batalhar muito ou que nunca havia garantia de amanhã. O problema é que essa programação continua comandando suas decisões até hoje.\n\nEnquanto sua mente estiver ocupada tentando sobreviver, ela terá dificuldade para criar prosperidade. Você continuará trabalhando cada vez mais para sentir cada vez menos tranquilidade. Mas existe uma notícia libertadora: escassez não é destino. É apenas uma forma de enxergar o mundo que pode ser transformada quando você entende sua origem.\n\n<b>Antes de continuar, saiba que o que você descobriu hoje é apenas a superfície. Nos próximos conteúdos você vai entender por que tantas pessoas passam anos tentando ganhar mais dinheiro quando, na verdade, o que precisa mudar é a identidade que conduz suas escolhas.</b>"
         },
-        "culpa": { 
-            titulo: "SABOTADORA INCONSCIENTE", 
+        "A Recomeçadora": { 
+            titulo: "A Recomeçadora", 
             frases: ["Quando começo a me organizar, algo acontece.", "Dinheiro na minha mão não dura.", "Eu até ganho bem, mas nunca consigo manter."], 
-            diagnostico: "Você provavelmente já percebeu que existe um padrão estranho na sua vida financeira: quando as coisas começam a melhorar, algo acontece e você acaba voltando para o mesmo lugar. Pode ser um gasto inesperado, uma decisão impulsiva ou simplesmente a dificuldade de manter aquilo que conquistou. E isso gera uma sensação frustrante de estar sempre recomeçando. \n\n No fundo, não é falta de inteligência, disciplina ou capacidade. Existe uma parte inconsciente tentando manter você dentro de um nível considerado seguro e familiar. Por isso, mesmo desejando crescer, você encontra formas de impedir que esse crescimento se torne permanente. \n\n Se esse padrão continuar ativo, você pode passar anos acumulando esforço sem conseguir construir a estabilidade financeira que deseja. A sensação de estar andando em círculos tende a se repetir, mesmo quando sua renda aumenta. \n\n A transformação começa quando você entende que o problema não está no dinheiro, mas nos mecanismos emocionais que influenciam suas decisões. Quando essa raiz é trabalhada, torna-se possível criar resultados consistentes e sustentáveis. \n\n Na Mentoria Identidade Financeira, ajudamos você a identificar esses ciclos invisíveis e construir uma nova forma de se relacionar com prosperidade, realização e crescimento." 
+            diagnostico: "Você provavelmente conhece a sensação de finalmente conseguir avançar e, pouco tempo depois, perceber que voltou exatamente ao mesmo lugar. A renda aumenta, mas os gastos acompanham. Um dinheiro entra e logo aparece uma situação inesperada. Você faz planos, organiza tudo e, quando percebe, está recomeçando outra vez.<br><br>Talvez tenha acreditado durante muito tempo que lhe faltava disciplina ou controle. Mas e se o verdadeiro problema nunca tiver sido esse?<br><br>Seu inconsciente costuma repetir aquilo que considera familiar. Se crescer parece perigoso ou desconhecido, ele encontra formas sutis de devolver você para um território conhecido, mesmo que isso aconteça sem perceber.<br><br>A consequência é frustrante: muito esforço, pouca construção de patrimônio e uma sensação constante de estar correndo sem sair do lugar.<br><br>A boa notícia é que aquilo que foi aprendido também pode ser desaprendido. Quando você rompe esse ciclo invisível, sua energia deixa de ser usada para apagar incêndios e passa a construir um futuro sólido.<br><br><b>O que você acabou de descobrir explica muito do seu passado. O próximo passo pode explicar exatamente como quebrar esse ciclo de uma vez por todas.</b>" 
         },
-        "baixo_merecimento": { 
-            titulo: "INVISÍVEL FINANCEIRA", 
+        "A Talentosa Silenciosa": { 
+            titulo: "A Talentosa Silenciosa", 
             frases: ["Não sei se posso cobrar tudo isso.", "Não me sinto confortável falando de dinheiro.", "Talvez eu não valha esse valor."], 
-            diagnostico: "Você possui mais valor, competência e potencial do que costuma reconhecer. Frequentemente minimiza suas conquistas, sente desconforto ao falar sobre dinheiro e encontra dificuldade para cobrar aquilo que realmente merece receber. Muitas vezes acredita que ainda precisa estudar mais, melhorar mais ou provar mais antes de se sentir pronta. \n\n Esse padrão faz com que oportunidades sejam perdidas, negociações sejam evitadas e sua remuneração fique abaixo daquilo que poderia alcançar. Quanto mais você duvida do próprio valor, mais o mundo tende a refletir essa mesma dúvida. \n\n Com o passar do tempo, isso pode gerar frustração, sensação de injustiça e a impressão de que seu esforço não é recompensado da forma que deveria. Não porque você não tenha capacidade, mas porque ainda não reconheceu plenamente o seu valor. \n\n A verdadeira mudança acontece quando sua identidade passa a sustentar o nível de prosperidade que você deseja viver. Quando você se percebe de forma diferente, suas decisões, seus limites e seus resultados também mudam. \n\n Na Mentoria Identidade Financeira, trabalhamos para fortalecer sua autoestima financeira, desenvolver segurança para se posicionar e criar uma relação mais saudável entre valor, dinheiro e merecimento." 
+            diagnostico: "Existe uma possibilidade enorme de você ser muito mais competente do que acredita. Enquanto outras pessoas cobram, negociam e se posicionam com confiança, você tende a minimizar suas próprias capacidades e esperar o momento em que finalmente se sentirá pronta. Só que esse momento quase nunca chega<br><br>Você talvez já tenha recusado oportunidades, cobrado menos do que deveria ou deixado de pedir aquilo que merecia simplesmente porque não se sentia boa o suficiente.<br><br>O mais injusto é que o mercado costuma pagar não apenas pela competência, mas pela forma como cada pessoa enxerga o próprio valor. E quando sua identidade é pequena, sua renda tende a acompanhar esse limite invisível.<br><br>Imagine como seria viver sem precisar provar constantemente que merece prosperar. Imagine agir com naturalidade, segurança e confiança porque finalmente reconhece aquilo que sempre existiu dentro de você.<br><br><b>Talvez o maior obstáculo entre você e a prosperidade nunca tenha sido falta de capacidade, mas apenas uma identidade que ainda não aprendeu a enxergar o próprio valor.</b>" 
         },
-        "morais": { 
-            titulo: "JUÍZA DO DINHEIRO", 
+        "A Protetora dos Valores": { 
+            titulo: "A Protetora dos Valores", 
             frases: ["Dinheiro muda as pessoas.", "Quem tem muito dinheiro geralmente fez algo errado.", "Prefiro ser feliz do que rica."], 
-            diagnostico: "Existe uma parte sua que deseja prosperar e outra que ainda associa riqueza a comportamentos negativos, egoísmo, arrogância ou afastamento das pessoas. Mesmo que racionalmente você queira ganhar mais, emocionalmente pode existir um conflito que faz o crescimento financeiro parecer perigoso ou adequado. \n\n Esse tipo de crença costuma atuar silenciosamente. Você se esforça para crescer, mas ao mesmo tempo cria barreiras invisíveis que dificultam o recebimento, a expansão e a construção de patrimônio. Afinal, é difícil desejar algo que, no fundo, você acredita ser ruim. \n\n Se esse padrão permanecer ativo, a prosperidade continuará sendo percebida como um risco emocional, e não como uma possibilidade natural. Isso pode gerar culpa, bloqueios financeiros e resistência a oportunidades importantes. \n\n A virada acontece quando você percebe que dinheiro não define caráter. Pessoas boas continuam boas com mais dinheiro. Pessoas generosas continuam generosas com mais dinheiro. O dinheiro apenas amplia aquilo que já existe. \n\n Na Mentoria Identidade Financeira, ajudamos você a reconstruir sua percepção sobre riqueza para que prosperar deixe de ser um conflito e se torne uma consequência natural do seu crescimento." 
+            diagnostico: "Você deseja prosperar, mas existe uma parte de você que ainda associa riqueza a egoísmo, arrogância ou afastamento das pessoas que ama. Mesmo sem perceber, pode carregar crenças como \"dinheiro muda as pessoas\" ou \"quem enriquece deixa de ser humilde\".<br><br>Esse conflito cria uma batalha silenciosa. Enquanto uma parte sonha com liberdade financeira, outra trabalha para impedir que isso aconteça.<br><br>O resultado é uma vida inteira tentando alcançar algo que o próprio inconsciente considera perigoso.<br><br>Mas pense por um instante: dinheiro apenas amplia aquilo que já existe. Pessoas generosas se tornam ainda mais generosas.Pessoas bondosas têm mais recursos para ajudar. Prosperidade não muda caráter; apenas oferece novas possibilidades.<br><br>Quando essa compreensão acontece, crescer deixa de parecer uma ameaça e passa a ser uma oportunidade de viver com ainda mais propósito.<br><br><b>Se essa descoberta fez sentido para você, prepare-se para questionar ideias que talvez tenham guiado sua vida inteira sem que você percebesse.</b>"
         },
-        "medo_perda": { 
-            titulo: "CONSERVADORA PARALISADA", 
+        "A Guardiã da Segurança": { 
+            titulo: "A Guardiã da Segurança", 
             frases: ["E se eu perder tudo?", "Prefiro não mexer para não correr riscos.", "Tenho medo de tomar a decisão errada."], 
-            diagnostico: "Você valoriza segurança e estabilidade. Isso é uma qualidade importante, mas em alguns momentos o medo de errar acaba sendo maior do que a vontade de avançar. Por isso, decisões importantes são adiadas, oportunidades são analisadas excessivamente e a busca por segurança absoluta acaba gerando estagnação. \n\n Muitas vezes você acredita que está se protegendo, quando na verdade está apenas permanecendo parada. E o problema é que ficar imóvel também tem um custo. Enquanto o medo tenta evitar perdas, ele também impede conquistas. \n\n Ao longo dos anos, isso pode gerar arrependimento, sensação de potencial desperdiçado e a percepção de que a vida financeira não evolui na velocidade que poderia. \n\n O crescimento não acontece quando o medo desaparece. Ele acontece quando você desenvolve confiança suficiente para agir apesar dele. É nesse momento que novas possibilidades começam a surgir. \n\n Na Mentoria Identidade Financeira, você aprenderá a fortalecer sua segurança interna para tomar decisões financeiras com mais clareza, confiança e tranquilidade." 
+            diagnostico: "Você gosta de analisar, pensar, pesquisar e buscar o melhor caminho antes de agir. Isso demonstra responsabilidade. Porém, em muitos momentos, o medo de tomar uma decisão errada acaba sendo maior do que a vontade de construir uma vida diferente.<br><br>Enquanto espera pela certeza absoluta, oportunidades passam.<br><br>Enquanto tenta evitar qualquer risco, também evita muitos resultados extraordinários.<br><br>O curioso é que permanecer exatamente onde está também representa um risco, embora quase ninguém perceba isso.<br><br>A verdadeira segurança não nasce da ausência de medo. Ela nasce da confiança que você desenvolve para seguir em frente mesmo quando ainda não possui todas as respostas.<br><br><b>Existe uma enorme diferença entre prudência e paralisia. Descobrir essa diferença pode mudar completamente sua trajetória financeira.</b>"
         },
-        "teto_limitado": { 
-            titulo: "LIMITADA POR PADRÃO", 
+        "A Prisioneira do Próprio Teto": { 
+            titulo: "A Prisioneira do Próprio Teto", 
             frases: ["Sempre volto para o mesmo nível.", "Parece que existe um limite do quanto consigo ganhar.", "Quando ganho mais, gasto mais."], 
-            diagnostico: "Você provavelmente já viveu momentos em que ganhou mais dinheiro, teve melhores oportunidades ou alcançou resultados superiores. O problema é que, por algum motivo, esse crescimento nunca se sustentou por muito tempo. Parece existir um limite invisível que sempre traz você de volta ao mesmo patamar. \n\n Esse padrão faz com que o esforço aumente sem que a construção de patrimônio acompanhe na mesma proporção. Quanto mais tempo isso acontece, mais surge a sensação de que existe algo impedindo sua evolução. \n\n A verdade é que toda pessoa possui um 'termostato financeiro', um nível de prosperidade que considera normal. Quando você tenta ultrapassar esse limite sem atualizar sua identidade, o inconsciente cria formas de retornar ao ponto conhecido. \n\n A boa notícia é que esse teto não é real. Ele é apenas um padrão aprendido. E tudo aquilo que foi aprendido também pode ser transformado. \n\n Na Mentoria Identidade Financeira, ajudamos você a expandir sua identidade financeira para que seus resultados cresçam e permaneçam em um novo nível." 
+            diagnostico: "Você já teve provas suficientes de que é capaz de crescer. O problema é que esse crescimento nunca parece durar. Existe uma força invisível que faz você retornar ao mesmo nível, como se houvesse um limite silencioso dizendo até onde pode chegar.<br><br>Talvez tenha acreditado que isso fosse azar. Talvez tenha pensado que o problema fosse o mercado ou as circunstâncias.<br><br>Mas existe outra possibilidade.<br><br>Todo ser humano possui um padrão interno sobre aquilo que considera normal receber. E quando tenta ultrapassar esse limite sem transformar a própria identidade, o inconsciente cria maneiras de restaurar o equilíbrio conhecido.<br><br>A consequência é passar anos trabalhando muito sem perceber que o verdadeiro bloqueio nunca esteve do lado de fora.<br><br><b>Imagine descobrir que o teto que limita seus resultados nunca existiu de verdade. Imagine perceber que ele sempre esteve apenas na forma como você aprendeu a se enxergar.</b>"
         },
-        "dependencia": { 
-            titulo: "DEPENDENTE FINANCEIRA", 
+        "A Espectadora da Própria Vida Financeira": { 
+            titulo: "A Espectadora da Própria Vida Financeira", 
             frases: ["Nunca fui boa com dinheiro.", "Prefiro que outra pessoa cuide disso.", "Finanças são muito complicadas para mim."], 
-            diagnostico: "Você pode ter aprendido, ao longo da vida, que dinheiro é complicado demais ou que outras pessoas são naturalmente melhores para lidar com finanças. Por isso, muitas vezes evita aprofundar-se no assunto ou transfere decisões importantes para terceiros. \n\n Embora essa postura pareça confortável no curto prazo, ela costuma gerar insegurança, dependência e sensação de vulnerabilidade. Afinal, quando você não assume o controle da própria vida financeira, acaba entregando esse poder para outras pessoas ou para as circunstâncias. \n\n Com o tempo, isso pode limitar sua autonomia e fazer com que decisões importantes sejam tomadas sem a confiança que você merece ter. \n\n A transformação acontece quando você percebe que não precisa nascer sabendo. Você apenas precisa assumir o papel de protagonista da sua própria história financeira.\n\n Na Mentoria Identidade Financeira, você desenvolverá conhecimento, confiança e autonomia para tomar decisões alinhadas aos seus objetivos e valores." 
+            diagnostico: "Talvez você tenha aprendido que dinheiro é complicado demais, que outras pessoas entendem melhor ou que não nasceu para lidar com números. Aos poucos, foi deixando decisões importantes nas mãos dos outros e se acostumou a acreditar que esse assunto simplesmente não é para você.<br><br>Só que cada vez que entrega esse poder, entrega também uma parte da sua liberdade.<br><br>Você não precisa dominar investimentos complexos para assumir o protagonismo da própria vida.<br><br> Precisa apenas acreditar que é capaz de aprender.<br><br>Quando muda essa percepção, algo extraordinário acontece: o medo dá lugar à autonomia e as decisões passam a refletir aquilo que realmente faz sentido para você.<br><br><b>Existe uma versão sua que toma decisões com segurança, entende o próprio dinheiro e constrói o futuro que deseja. Talvez ela esteja muito mais próxima do que imagina.</b>"
         },
-        "conflito": { 
-            titulo: "COMPENSADORA", 
+        "A Compensadora": { 
+            titulo: "A Compensadora", 
             frases: ["Eu mereço.", "Só se vive uma vez.", "Não sei se terei outra oportunidade."], 
-            diagnostico: "Você valoriza experiências, qualidade de vida e os momentos que fazem a vida valer a pena. O problema não está nisso. O problema surge quando o prazer passa a funcionar como compensação para o estresse, o cansaço ou as frustrações do dia a dia. \n\n Nessas situações, gastos impulsivos costumam ser justificados por frases como 'eu mereço', 'só se vive uma vez' ou 'talvez eu não tenha outra oportunidade'. O alívio emocional é imediato, mas muitas vezes vem acompanhado de arrependimento ou preocupação depois. \n\n Esse padrão dificulta a construção de patrimônio porque faz com que decisões de curto prazo tenham mais força do que objetivos maiores. E quanto mais o dinheiro é usado para preencher necessidades emocionais, mais difícil se torna alcançar liberdade financeira. \n\n A verdadeira mudança acontece quando você aprende a desfrutar da vida sem transformar o dinheiro em ferramenta de compensação emocional. Prazer e prosperidade não precisam ser opostos. \n\n Na Mentoria Identidade Financeira, você aprenderá a criar uma relação equilibrada com o dinheiro, aproveitando o presente sem comprometer o futuro que deseja construir." 
+            diagnostico: "Você trabalha duro. Resolve problemas. Cuida das pessoas. Enfrenta desafios diariamente. E, no meio de tudo isso, aprendeu que merece uma recompensa.<br><br>Então compra algo especial, faz aquela viagem, aceita uma oportunidade imperdível ou simplesmente diz para si mesma: \"Só se vive uma vez.\"<br><br>O problema não está em aproveitar a vida. O problema é quando o dinheiro passa a preencher emoções que nunca foram realmente resolvidas.<br><br>Por alguns instantes existe alívio. Depois vêm a preocupação, a culpa ou a sensação de que o patrimônio continua distante.<br><br>Imagine continuar desfrutando do que ama, mas fazendo isso com liberdade, planejamento e tranquilidade, sem precisar escolher entre viver o presente ou construir o futuro.<br><br>Porque a verdadeira prosperidade não exige abrir mão do prazer. Ela apenas ensina uma nova formade experimentá-lo.<br><br><b>Talvez você não precise gastar menos para mudar sua vida financeira. Talvez precise apenas descobrir por que sente que precisa gastar para se sentir melhor</b>"
         }
     };
 
@@ -532,7 +535,7 @@
         }
 
         const btn = document.getElementById('btn-save-lead');
-        btn.innerText = "Processando diagnósticos...";
+        btn.innerText = "Processando...";
         btn.disabled = true;
 
         const maior = temporarioRanking[0];
@@ -560,7 +563,6 @@
             document.getElementById('res-nome').innerText = payload.nome;
 
             const htmlResultado = `
-                <span class="diagnostic-intro-phrase">Seu resultado não define quem você é.<br>Define o padrão que você aprendeu.</span>
                 <div class="diagnostic-title-centered">${maior.titulo}</div>
                 <div class="diagnostic-body-justified">${dadosCrencas[maior.key].diagnostico}</div>
             `;
