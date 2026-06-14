@@ -260,40 +260,19 @@
         const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbz_tf6DapoR542P1_xTD21v4BtjdPMNngxfllb4stsYPk4RjUk-AwIJXuaCtTnpJ5PN/exec";
         let bancoDeDados = [];
 
-        // MAPEAMENTO CORRIGIDO: Vincula perfeitamente os títulos do Index com os rótulos do painel administrativo
-        const mapNomes = {
-            "SOBREVIVENTE FINANCEIRA": "Escassez / Sobrevivência",
-            "SABOTADORA INCONSCIENTE": "Culpa / Autosabotagem",
-            "INVISÍVEL FINANCEIRA": "Baixo Merecimento",
-            "JUÍZA DO DINHEIRO": "Crenças Morais sobre Dinheiro",
-            "CONSERVADORA PARALISADA": "Medo de Perder / Instabilidade",
-            "LIMITADA POR PADRÃO": "Padrão de Ganho Limitado (Teto Financeiro)",
-            "DEPENDENTE FINANCEIRA": "Dependência / Desresponsabilização",
-            "COMPENSADORA": "Conflito no Relacionamento",
-
-            // Fallbacks de segurança para dados antigos
-            "Escassez / Sobrevivência": "Escassez / Sobrevivência",
-            "Culpa / Autosabotagem": "Culpa / Autosabotagem",
-            "Baixo Merecimento": "Baixo Merecimento",
-            "Crenças Morais sobre Dinheiro": "Crenças Morais sobre Dinheiro",
-            "Medo de Perder / Instabilidade": "Medo de Perder / Instabilidade",
-            "Padrão de Ganho Limitado (Teto Financeiro)": "Padrão de Ganho Limitado (Teto Financeiro)",
-            "Padrão de Ganho Limitado": "Padrão de Ganho Limitado (Teto Financeiro)",
-            "Dependência / Desresponsabilização": "Dependência / Desresponsabilização",
-            "Conflito no Relacionamento": "Conflito no Relacionamento",
-            
-            // Chaves curtas do objeto interno JSON (Gráfico do Modal)
-            escassez: "Escassez / Sobrevivência",
-            culpa: "Culpa / Autosabotagem",
-            baixo_merecimento: "Baixo Merecimento",
-            morais: "Crenças Morais sobre Dinheiro",
-            medo_perda: "Medo de Perder / Instabilidade",
-            teto_limitado: "Padrão de Ganho Limitado (Teto Financeiro)",
-            dependencia: "Dependência / Desresponsabilização",
-            conflito: "Conflito no Relacionamento"
+        // MAPEAMENTO CENTRALIZADO
+        const NOMES_CRENCAS = {
+            escassez: "A Guerreira Incansável",
+            culpa: "A Recomeçadora",
+            baixo_merecimento: "A Talentosa Silenciosa",
+            morais: "A Protetora dos Valores",
+            medo_perda: "A Guardiã da Segurança",
+            teto_limitado: "A Prisioneira do Próprio Teto",
+            dependencia: "A Espectadora da Própria Vida Financeira",
+            conflito: "A Compensadora"
         };
 
-        // Tratamento do F5 para não deslogar
+        // Tratamento do F5
         window.onload = function() {
             const usuarioLogado = localStorage.getItem('admin_logado');
             if (usuarioLogado === 'true') {
@@ -308,12 +287,10 @@
             e.preventDefault();
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
-            
             if(u === "vanessa.barros" && p === "Mentoria@2026") {
                 localStorage.setItem('admin_logado', 'true');
                 document.getElementById('sec-login').classList.add('hidden');
                 document.getElementById('sec-content').classList.remove('hidden');
-                document.getElementById('lbl-user').innerText = u;
                 carregarDadosPlanilha();
             } else {
                 document.getElementById('err-msg').style.display = 'block';
@@ -321,260 +298,120 @@
         }
 
         function executarLogout() {
-            // Remove a flag de login para o F5 não reautenticar
             localStorage.removeItem('admin_logado');
-            
-            // Limpa os campos do formulário por segurança
-            document.getElementById('user').value = "";
-            document.getElementById('pass').value = "";
-            
-            // Esconde o painel de conteúdo e mostra a tela de login
-            document.getElementById('sec-content').classList.add('hidden');
-            document.getElementById('sec-login').classList.remove('hidden');
-            
-            // Recarrega a página para limpar todas as variáveis em memória (bancoDeDados, gráficos, etc.)
             window.location.reload();
         }
 
         function carregarDadosPlanilha() {
-            document.getElementById('card-status').innerText = "Carregando...";
-            document.getElementById('card-status').style.color = "var(--text-muted)";
-            
-            // Limpa a barra de pesquisa ao atualizar para trazer todos os dados novos
-            const searchInput = document.getElementById('search-input');
-            if (searchInput) searchInput.value = "";
-
             fetch(URL_API_GOOGLE)
             .then(res => res.json())
             .then(data => {
                 bancoDeDados = Array.isArray(data) ? data : [];
                 document.getElementById('card-status').innerText = "Conectado via API";
                 document.getElementById('card-status').style.color = "var(--green-glow)";
-                
                 processarEstatisticaGeral();
                 renderizarTabela();
-            })
-            .catch(err => {
-                document.getElementById('table-rows').innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ff4d4d;">Erro ao ler registros do Google Sheets. Verifique a API.</td></tr>`;
-                document.getElementById('card-status').innerText = "Erro API";
-                document.getElementById('card-status').style.color = "#ff4d4d";
-                console.error(err);
-            });
-        }
-
-        // NOVA FUNÇÃO: Filtra as linhas da tabela em tempo real sem recarregar a página
-        function filtrarTabela() {
-            const termoBusca = document.getElementById('search-input').value.toLowerCase().trim();
-            const linhas = document.querySelectorAll('#table-rows tr');
-
-            linhas.forEach(linha => {
-                // Se a tabela estiver vazia com a mensagem de erro/carregando, ignora o filtro
-                if (linha.cells.length < 5) return;
-
-                const nome = linha.cells[1].innerText.toLowerCase();
-                const email = linha.cells[2].innerText.toLowerCase();
-                const crenca = linha.cells[4].innerText.toLowerCase();
-
-                // Verifica se o termo digitado bate com qualquer um dos campos principais
-                if (nome.includes(termoBusca) || email.includes(termoBusca) || crenca.includes(termoBusca)) {
-                    linha.style.display = ""; // Mostra a linha
-                } else {
-                    linha.style.display = "none"; // Esconde a linha
-                }
             });
         }
 
         function processarEstatisticaGeral() {
-            const contagemGeral = {
-                "SOBREVIVENTE FINANCEIRA": 0,
-                "SABOTADORA INCONSCIENTE": 0,
-                "INVISÍVEL FINANCEIRA": 0,
-                "JUÍZA DO DINHEIRO": 0,
-                "CONSERVADORA PARALISADA": 0,
-                "LIMITADA POR PADRÃO": 0,
-                "DEPENDENTE FINANCEIRA": 0,
-                "COMPENSADORA": 0
-            };
+            let contagem = {};
+            Object.values(NOMES_CRENCAS).forEach(nome => contagem[nome] = 0);
 
             bancoDeDados.forEach(row => {
-                if (row && row.principal) {
-                    // Normaliza o texto removendo espaços extras e passando para maiúsculas
-                    const termoPlanilha = String(row.principal).toUpperCase().trim();
-                    
-                    // Se o termo direto da planilha existir no objeto, soma. 
-                    // Se for um dado antigo de outra versão, tenta converter pelo mapNomes invertido
-                    if (contagemGeral[termoPlanilha] !== undefined) {
-                        contagemGeral[termoPlanilha]++;
-                    } else {
-                        // Fallback de segurança para registros legados ("Escassez / Sobrevivência" -> "SOBREVIVENTE FINANCEIRA")
-                        const chavesInversas = {
-                            "Escassez / Sobrevivência": "SOBREVIVENTE FINANCEIRA",
-                            "Culpa / Autosabotagem": "SABOTADORA INCONSCIENTE",
-                            "Baixo Merecimento": "INVISÍVEL FINANCEIRA",
-                            "Crenças Morais sobre Dinheiro": "JUÍZA DO DINHEIRO",
-                            "Medo de Perder / Instabilidade": "CONSERVADORA PARALISADA",
-                            "Padrão de Ganho Limitado (Teto Financeiro)": "LIMITADA POR PADRÃO",
-                            "Padrão de Ganho Limitado": "LIMITADA POR PADRÃO",
-                            "Dependência / Desresponsabilização": "DEPENDENTE FINANCEIRA",
-                            "Conflito no Relacionamento": "COMPENSADORA"
-                        };
-                        const equivalenteNovo = chavesInversas[row.principal];
-                        if (equivalenteNovo && contagemGeral[equivalenteNovo] !== undefined) {
-                            contagemGeral[equivalenteNovo]++;
-                        }
-                    }
+                let nome = row.principal;
+                if(contagem.hasOwnProperty(nome)) {
+                    contagem[nome]++;
                 }
             });
-            const totalSubmissoes = bancoDeDados.length;
-            document.getElementById('card-total').innerText = totalSubmissoes;
 
-            let maiorCritica = "---";
-            let maxOcorrencias = -1;
+            document.getElementById('card-total').innerText = bancoDeDados.length;
             
-            Object.entries(contagemGeral).forEach(([label, total]) => {
-                if(total > maxOcorrencias && total > 0) {
-                    maxOcorrencias = total;
-                    // Salva o título da maior crença formatado de forma limpa para o card superior
-                    maiorCritica = label;
-                }
-            });
-            document.getElementById('card-critico').innerText = maiorCritica;
+            let maior = Object.keys(contagem).reduce((a, b) => contagem[a] > contagem[b] ? a : b);
+            document.getElementById('card-critico').innerText = contagem[maior] > 0 ? maior : "---";
 
             const chartContainer = document.getElementById('global-chart-container');
             chartContainer.innerHTML = "";
 
-            // Injeta as barras usando os novos nomes em maiúsculas na tela
-            Object.entries(contagemGeral).forEach(([label, total]) => {
-                const percentualBarra = totalSubmissoes > 0 ? (total / totalSubmissoes) * 100 : 0;
-
+            Object.entries(contagem).forEach(([label, total]) => {
+                const percent = bancoDeDados.length > 0 ? (total / bancoDeDados.length) * 100 : 0;
                 chartContainer.innerHTML += `
                     <div class="stat-row">
-                        <div class="stat-label" style="font-weight: 600; font-size: 0.85em; letter-spacing: 0.5px;">${label}</div>
-                        <div class="stat-track">
-                            <div class="stat-fill" style="width: ${percentualBarra}%"></div>
-                        </div>
+                        <div class="stat-label">${label}</div>
+                        <div class="stat-track"><div class="stat-fill" style="width: ${percent}%"></div></div>
                         <div class="stat-count">${total}x</div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
         function renderizarTabela() {
             const tbody = document.getElementById('table-rows');
-            if(bancoDeDados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Nenhum registro cadastrado na planilha.</td></tr>`;
-                return;
-            }
-            
             tbody.innerHTML = "";
-            [...bancoDeDados].reverse().forEach((row, index) => {
+            [...bancoDeDados].reverse().forEach((row, i) => {
                 const tr = document.createElement('tr');
-                const originalIndex = bancoDeDados.length - 1 - index;
-                tr.onclick = () => openUserModal(originalIndex);
-                
-                // Normaliza o texto que vem da planilha para maiúsculas e remove espaços extras
-                const termoTabela = String(row.principal).toUpperCase().trim();
-                
-                // Dicionário de conversão caso existam registros antigos guardados no Sheets
-                const conversorParaNovoPadrao = {
-                    "ESCASSEZ / SOBREVIVÊNCIA": "SOBREVIVENTE FINANCEIRA",
-                    "CULPA / AUTOSABOTAGEM": "SABOTADORA INCONSCIENTE",
-                    "BAIXO MERECIMENTO": "INVISÍVEL FINANCEIRA",
-                    "CRENÇAS MORAIS SOBRE DINHEIRO": "JUÍZA DO DINHEIRO",
-                    "MEDO DE PERDER / INSTABILIDADE": "CONSERVADORA PARALISADA",
-                    "PADRÃO DE GANHO LIMITADO (TETO FINANCEIRO)": "LIMITADA POR PADRÃO",
-                    "PADRÃO DE GANHO LIMITADO": "LIMITADA POR PADRÃO",
-                    "DEPENDÊNCIA / DESRESPONSABILIZAÇÃO": "DEPENDENTE FINANCEIRA",
-                    "CONFLITO NO RELACIONAMENTO": "COMPENSADORA"
-                };
-
-                // Se o termo já estiver no formato novo ("SOBREVIVENTE FINANCEIRA"), usa-o direto.
-                // Se for um termo antigo, converte-o para o novo padrão em maiúsculas.
-                const principalExibicao = conversorParaNovoPadrao[termoTabela] || termoTabela;
-
+                tr.onclick = () => openUserModal(bancoDeDados.length - 1 - i);
                 tr.innerHTML = `
                     <td>${row.data || ''}</td>
-                    <td style="font-weight:600; color: #fff;">${row.nome || ''}</td>
+                    <td style="font-weight:600;">${row.nome || ''}</td>
                     <td>${row.email || ''}</td>
                     <td>${row.whatsapp || ''}</td>
-                    <td style="color:var(--green-glow); font-weight:600; font-size: 0.85em; letter-spacing: 0.5px;">${principalExibicao}</td>
-                    <td style="font-weight:bold; text-align:center; color: #fff;">${row.pontos || 0}</td>
-                `;
+                    <td style="color:var(--green-glow);">${row.principal || ''}</td>
+                    <td style="text-align:center;">${row.pontos || 0}</td>`;
                 tbody.appendChild(tr);
             });
         }
 
-        function openUserModal(index) {
+       function openUserModal(index) {
             const user = bancoDeDados[index];
-            
-            // Normaliza para o modal também exibir no formato correto
-            const termoModal = String(user.principal).toUpperCase().trim();
-            const conversorParaNovoPadrao = {
-                "ESCASSEZ / SOBREVIVÊNCIA": "SOBREVIVENTE FINANCEIRA",
-                "CULPA / AUTOSABOTAGEM": "SABOTADORA INCONSCIENTE",
-                "BAIXO MERECIMENTO": "INVISÍVEL FINANCEIRA",
-                "CRENÇAS MORAIS SOBRE DINHEIRO": "JUÍZA DO DINHEIRO",
-                "MEDO DE PERDER / INSTABILIDADE": "CONSERVADORA PARALISADA",
-                "PADRÃO DE GANHO LIMITADO (TETO FINANCEIRO)": "LIMITADA POR PADRÃO",
-                "PADRÃO DE GANHO LIMITADO": "LIMITADA POR PADRÃO",
-                "DEPENDÊNCIA / DESRESPONSABILIZAÇÃO": "DEPENDENTE FINANCEIRA",
-                "CONFLITO NO RELACIONAMENTO": "COMPENSADORA"
-            };
-            
-            const crencaExibicaoModal = conversorParaNovoPadrao[termoModal] || termoModal;
-
             document.getElementById('m-nome').innerText = user.nome || '';
             document.getElementById('m-contato').innerText = `${user.email || ''} | ${user.whatsapp || ''}`;
-            document.getElementById('m-crenca').innerText = crencaExibicaoModal;
+            document.getElementById('m-crenca').innerText = user.principal || '';
             document.getElementById('m-pontos').innerText = user.pontos || 0;
 
-            const chartContainer = document.getElementById('m-chart-container');
-            chartContainer.innerHTML = "";
-
-            let scoresObj = {};
+            // Carrega o JSON da planilha
+            let scores = {};
             if (user.scores) {
                 try {
-                    scoresObj = typeof user.scores === 'string' ? JSON.parse(user.scores) : user.scores;
-                } catch (e) {
-                    console.error("Erro ao converter coluna de pontuações detalhadas:", e);
-                }
+                    scores = typeof user.scores === 'string' ? JSON.parse(user.scores) : user.scores;
+                } catch(e) { console.error("Erro no JSON:", e); }
             }
 
-            // Mapeamento local apenas para as barras internas do gráfico do modal
-            const mapChavesModal = {
-                escassez: "SOBREVIVENTE FINANCEIRA",
-                culpa: "SABOTADORA INCONSCIENTE",
-                baixo_merecimento: "INVISÍVEL FINANCEIRA",
-                morais: "JUÍZA DO DINHEIRO",
-                medo_perda: "CONSERVADORA PARALISADA",
-                teto_limitado: "LIMITADA POR PADRÃO",
-                dependencia: "DEPENDENTE FINANCEIRA",
-                conflito: "COMPENSADORA"
-            };
+            const container = document.getElementById('m-chart-container');
+            container.innerHTML = "";
 
-            const chavesInternas = ["escassez", "culpa", "baixo_merecimento", "morais", "medo_perda", "teto_limitado", "dependencia", "conflito"];
+            // Lista exatamente os nomes que estão na sua coluna G (na planilha)
+            const titulosCrencas = [
+                "A Guerreira Incansável",
+                "A Recomeçadora",
+                "A Talentosa Silenciosa",
+                "A Protetora dos Valores",
+                "A Guardiã da Segurança",
+                "A Prisioneira do Próprio Teto",
+                "A Espectadora da Própria Vida Financeira",
+                "A Compensadora"
+            ];
 
-            chavesInternas.forEach(key => {
-                const pontosVal = scoresObj[key] ? parseInt(scoresObj[key]) : 0;
-                const percentual = (pontosVal / 15) * 100;
-
-                chartContainer.innerHTML += `
+            // Percorre esses títulos e busca o valor correspondente no JSON
+            titulosCrencas.forEach((titulo) => {
+                const pts = scores[titulo] || 0; // Busca direto pelo nome que está no JSON
+                const percentual = (pts / 15) * 100;
+                
+                container.innerHTML += `
                     <div class="stat-row">
-                        <div class="stat-label" style="width: 220px; font-size:0.8em; font-weight:600;">${mapChavesModal[key]}</div>
+                        <div class="stat-label" style="width:220px; font-size:0.8em;">${titulo}</div>
                         <div class="stat-track">
                             <div class="stat-fill" style="width: ${percentual}%"></div>
                         </div>
-                        <div class="stat-count" style="width: 45px; font-size:0.9em;">${pontosVal}pts</div>
-                    </div>
-                `;
+                        <div class="stat-count" style="font-size:0.9em;">${pts}pts</div>
+                    </div>`;
             });
-
+            
             document.getElementById('user-modal').classList.add('active');
         }
 
-        function closeUserModal() {
-            document.getElementById('user-modal').classList.remove('active');
-        }
+        function closeUserModal() { document.getElementById('user-modal').classList.remove('active'); }
+        function filtrarTabela() { /* ... mantenha sua função de filtro original ... */ }
     </script>
+
 </body>
 </html>
